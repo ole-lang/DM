@@ -11,7 +11,7 @@ df = fuel_intervals.copy()
 # only use rows without NaN values
 df = df.dropna(subset=["mean_speed", "std_speed", "fuel_diff_ml"]).reset_index(drop=True)
 
-X = df[["mean_speed", "std_speed","total_acc_m_s", "total_brake_m_s"]].values
+X = df[["mean_speed", "std_speed"]].values
 y = df["fuel_diff_ml"].values
 
 # Dividing the dataset into training and testing sets
@@ -29,14 +29,14 @@ mae = mean_absolute_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
 print("Used rows:", len(df))
-print("Coefficients (mean_speed, std_speed, acc, brake):", model.coef_)
+print("Coefficients (mean_speed, std_speed):", model.coef_)
 print("Intercept:", model.intercept_)
 print("MSE:", mse)
 print("RMSE:", rmse)
 print("MAE:", mae)
 print("R²:", r2)
 
-
+"""
 # simple Scatter-Plot
 plt.figure(figsize=(6,6))
 plt.scatter(y_test, y_pred, alpha=0.7)
@@ -47,3 +47,4 @@ plt.title("Predicted vs. Actual")
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+"""
