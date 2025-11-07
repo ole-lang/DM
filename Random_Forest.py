@@ -6,11 +6,11 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-import Data as data
+from Data import fuel_intervals as data
 
 # Drop NaNs 
 # TODO: what is the df in data actually called? - otherwise i think i am done here
-df_features = pd.DataFrame(data.results)
+df_features = data
 
 # Features and target variable
 df_features["duration_s"] = (df_features["end_time"] - df_features["start_time"]).dt.total_seconds()
