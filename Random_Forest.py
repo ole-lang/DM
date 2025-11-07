@@ -1,4 +1,7 @@
+import os
+import sys
 import numpy as np
+import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
@@ -7,12 +10,12 @@ import Data as data
 
 # Drop NaNs 
 # TODO: what is the df in data actually called? - otherwise i think i am done here
-df_features = data.df_model.dropna()
+df_features = pd.DataFrame(data.results)
 
 # Features and target variable
 df_features["duration_s"] = (df_features["end_time"] - df_features["start_time"]).dt.total_seconds()
-X = df_features.drop(columns=["start_time", "end_time", "fuel_used"])
-y = df_features["fuel_used"]
+X = df_features.drop(columns=["start_time", "end_time", "fuel_diff_ml"])
+y = df_features["fuel_diff_ml"]
 
 # Split the data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
