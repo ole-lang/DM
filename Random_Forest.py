@@ -1,7 +1,4 @@
-import os
-import sys
 import numpy as np
-import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
@@ -9,7 +6,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from Data import fuel_intervals as data
 
 # Drop NaNs 
-# TODO: what is the df in data actually called? - otherwise i think i am done here
+# TODO; what else can i adjust in order to improve the algorithm
 df_features = data
 
 # Features and target variable
@@ -21,7 +18,7 @@ y = df_features["fuel_diff_ml"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Initialize and train the model
-model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
+model = RandomForestRegressor(n_estimators=300, max_depth=8, random_state=42, min_samples_split=5, min_samples_leaf=2, max_features='sqrt')
 model.fit(X_train, y_train)
 
 # Evaluate the model

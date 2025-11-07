@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from Acceleration import _acc_brake_totals_mdi
 
-df = pd.read_csv("fuel_data/863609060549064.csv")
+df = pd.read_csv("fuel_data/863609060548926.csv")
 
 df["time"] = pd.to_datetime(df["time"])
 df = df.sort_values("time")
@@ -60,7 +60,7 @@ for i in range(1, len(fuel_df)):
     })
 
 fuel_intervals = pd.DataFrame(results)
-print(fuel_intervals["total_acc_m_s"].to_string(index=False))
+# print(fuel_intervals["total_acc_m_s"].to_string(index=False))
 
 
 #Amount of NaN values analysis
