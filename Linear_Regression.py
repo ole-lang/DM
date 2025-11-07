@@ -36,6 +36,7 @@ print("RMSE:", rmse)
 print("MAE:", mae)
 print("R²:", r2)
 
+"""
 # simple Scatter-Plot
 plt.figure(figsize=(6,6))
 plt.scatter(y_test, y_pred, alpha=0.7)
@@ -46,3 +47,4 @@ plt.title("Predicted vs. Actual")
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+"""
