@@ -1,11 +1,22 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from Acceleration import _acc_brake_totals_mdi
 
-df = pd.read_csv("fuel_data/863609060555871.csv")
+df = pd.read_csv("fuel_data/863609060555335.csv")
+# 863609060549072 863609060549098 - mess
 
 df["time"] = pd.to_datetime(df["time"])
 df = df.sort_values("time")
+'''
+# plot fuel consumption over time
+df['time'] = pd.to_datetime(df['time'])
+df = df.sort_values('time')
+plt.plot(df['time'], df['TRACKS.MUNIC.MDI_OBD_FUEL (ml)'], marker='o')
+plt.xlabel("Time")
+plt.ylabel("Fuel Consumption (ml)")
+plt.title("Fuel Consumption Over Time")
+plt.show()'''
 
 #Extract GPS speeds
 gps_speed_df = df.dropna(subset=["TRACKS.MUNIC.GPS_SPEED (km/h)"])[["time", "TRACKS.MUNIC.GPS_SPEED (km/h)"]].copy()

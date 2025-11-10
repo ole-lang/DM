@@ -1,3 +1,4 @@
+import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
@@ -38,3 +39,13 @@ plt.title("Predicted vs. Actual")
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+
+'''
+# plot fuel consumption over time
+data['start_time'] = pd.to_datetime(data['start_time'])
+data = data.sort_values('start_time')
+plt.plot(data['start_time'], data['fuel_diff_ml'], marker='o')
+plt.xlabel("Time")
+plt.ylabel("Fuel Consumption (ml)")
+plt.title("Fuel Consumption Over Time")
+plt.show()'''

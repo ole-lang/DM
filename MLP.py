@@ -2,6 +2,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
@@ -26,8 +27,7 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# Define model
-# Define model
+# Define model - adjust amount of neurons per layers and layers
 model = keras.Sequential([
     layers.Dense(64, activation='relu', input_shape=(X_train_scaled.shape[1],)),
     layers.Dense(32, activation='relu'),
@@ -57,7 +57,7 @@ test_loss, test_mae = model.evaluate(X_test_scaled, y_test)
 y_pred = model.predict(X_test_scaled).flatten()
 print(f"Test MAE: {test_mae:.4f}")
 print(f"Test Loss (MSE): {test_loss:.4f}")
-# print(f"R2 Score: {keras.metrics.R2Score()(y_test, y_pred).numpy():.4f}")
+print(f"R² = {r2_score(y_test, y_pred):.3f}")
 
 
 plt.scatter(y_test, y_pred)
