@@ -4,7 +4,7 @@ import matplotlib.dates as mdates
 import pandas as pd
 import os
 
-df = pd.read_csv("fuel_data/863609060549064.csv")
+df = pd.read_csv("fuel_data/863609060559592.csv")
 df["time"] = pd.to_datetime(df["time"])
 gps_col = next((c for c in df.columns if "gps_speed" in c.lower()), None)
 mdi_col = next((c for c in df.columns if "mdi_obd_speed" in c.lower()), None)
@@ -44,3 +44,4 @@ fig.autofmt_xdate()
 
 plt.tight_layout()
 plt.show()
+

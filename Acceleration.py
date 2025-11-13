@@ -2,8 +2,7 @@ import pandas as pd
 import numpy as np
 
 def _acc_brake_totals_mdi(speed_times, speeds_kmh):
-    """Nur Totals: total_acc_m_s (Summe positiver delta-v in m/s)
-    und total_brake_m_s (Summe negativer delta-v als positiver Wert in m/s)."""
+
     if len(speeds_kmh) < 2:
         return {"total_acc_m_s": 0.0, "total_brake_m_s": 0.0}
 

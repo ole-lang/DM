@@ -23,6 +23,7 @@ model.fit(X_train, y_train)
 
 # Predictions and metrics
 y_pred = model.predict(X_test)
+#y_pred_rounded = np.round(y_pred / 10.0) * 10.0
 mse = mean_squared_error(y_test, y_pred)
 rmse = np.sqrt(mse)
 mae = mean_absolute_error(y_test, y_pred)
@@ -36,7 +37,7 @@ print("RMSE:", rmse)
 print("MAE:", mae)
 print("R²:", r2)
 
-"""
+
 # simple Scatter-Plot
 plt.figure(figsize=(6,6))
 plt.scatter(y_test, y_pred, alpha=0.7)
@@ -47,4 +48,3 @@ plt.title("Predicted vs. Actual")
 plt.grid(True)
 plt.tight_layout()
 plt.show()
-"""
