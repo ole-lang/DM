@@ -1,14 +1,15 @@
-import pandas as pd
 from sklearn.model_selection import train_test_split
+import pandas as pd
 
 from models.Random_Forest import RandomForestModel
 from models.MLP import MLPFuelModel
 from Model_Evaluator import ModelEvaluator
 from models.Linear_Regression import LinearRegressionModel
 
-from Data import fuel_intervals as data
+from Data import DataLoader
 
-df_features = data
+fuel_data = pd.read_csv("fuel_data/863609060574567.csv")
+df_features = DataLoader(fuel_data).create_pd_dataframe()
 
 # Features and target variable
 df_features["duration_s"] = (df_features["end_time"] - df_features["start_time"]).dt.total_seconds()

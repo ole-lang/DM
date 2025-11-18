@@ -1,11 +1,4 @@
-import pandas as pd
-import numpy as np
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import matplotlib.pyplot as plt
-
-from Data import fuel_intervals as data
 
 class RandomForestModel:
     def __init__(self, n_estimators, max_depth, random_state, 
@@ -18,8 +11,6 @@ class RandomForestModel:
 
     def predict(self, X):
         return self.model.predict(X)
-    
-    # TODO remove tensor flow
     
 '''
 # Drop NaNs 

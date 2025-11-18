@@ -1,14 +1,8 @@
 # create a mullti-layer perceptron model for fuel consumption prediction
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-import matplotlib.pyplot as plt
 
 import keras
 from keras import layers
-
-from Data import fuel_intervals as data
+from sklearn.preprocessing import StandardScaler
 
 class MLPFuelModel():
     def __init__(self):
