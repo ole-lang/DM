@@ -5,22 +5,11 @@ import os
 import matplotlib.pyplot as plt
 from Acceleration import _acc_brake_totals_mdi
 
-'''
-path = "fuel_data"
-all_files = glob.glob(os.path.join(path, "*.csv"))
 
-# Read and concatenate them
-df_list = [pd.read_csv(f) for f in all_files]
-big_df = pd.concat(df_list, ignore_index=True)
-
-# Save combined dataset
-big_df.to_csv("combined_data.csv", index=False)
-'''
-
-df = pd.read_csv("863609060549098.csv")
+df = pd.read_csv("fuel_data/863609060574633.csv")
 # 863609060549072 863609060549098 - mess
 
-df["time"] = pd.to_datetime(df["time"], errors="coerce", infer_datetime_format=True)
+df["time"] = pd.to_datetime(df["time"])
 df = df.sort_values("time")
 '''
 # plot fuel consumption over time

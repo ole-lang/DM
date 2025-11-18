@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from Data import fuel_intervals
 
-
+# technocally unnecessary class
 df = fuel_intervals.copy()
 
 # only use rows without NaN values

@@ -1,12 +1,23 @@
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import matplotlib.pyplot as plt
 import numpy as np
-from Data import fuel_intervals
 
 
-df = fuel_intervals.copy()
+
+class LinearRegressionModel:
+    def __init__(self):
+        self.model = LinearRegression()
+
+    def train(self, X_train, y_train):
+        self.model.fit(X_train, y_train)
+
+    def predict(self, X):
+        return self.model.predict(X)
+    
+    # TODO remove tensor flow
+
+'''df = fuel_intervals.copy()
 
 # only use rows without NaN values
 df = df.dropna(subset=["mean_speed", "std_speed", "fuel_diff_ml"]).reset_index(drop=True)
@@ -36,7 +47,7 @@ print("RMSE:", rmse)
 print("MAE:", mae)
 print("R²:", r2)
 
-"""
+
 # simple Scatter-Plot
 plt.figure(figsize=(6,6))
 plt.scatter(y_test, y_pred, alpha=0.7)
@@ -47,4 +58,4 @@ plt.title("Predicted vs. Actual")
 plt.grid(True)
 plt.tight_layout()
 plt.show()
-"""
+'''
