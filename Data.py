@@ -15,8 +15,8 @@ class DataLoader():
         for file in all_files:
             df = pd.read_csv(file)
             df_list.append(df)
-        combined_df = pd.concat(df_list, ignore_index=True)
-        return combined_df
+        # combined_df = pd.concat(df_list, ignore_index=True)
+        return df_list
     
     def create_pd_dataframe(self):
         '''Process the loaded data to create a DataFrame with fuel intervals and speed statistics.'''
