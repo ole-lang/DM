@@ -89,30 +89,39 @@ for p in sorted(DATA_DIR.glob(CSV_GLOB)):
         # Evaluationen durchführen und aggregierte Werte holen
         regression_evaluator = ModelEvaluator(regression_model, df_features)
         reg_eval_result = regression_evaluator.evaluate(X_test, y_test, aggregate_window="10min")
-        linear_aggregated_r2 = reg_eval_result.get("aggregated", {}).get("r2") if isinstance(reg_eval_result,
-                                                                                             dict) else None
-        linear_r2 = reg_eval_result.get("r2") if isinstance(reg_eval_result, dict) and reg_eval_result.get(
-            "r2") is not None else safe_r2(regression_model, X_test, y_test)
+        linear_aggregated_r2 = reg_eval_result.get("aggregated", {}).get("r2") if isinstance(reg_eval_result,dict) else None
+        linear_r2 = reg_eval_result.get("r2") if isinstance(reg_eval_result, dict) and reg_eval_result.get("r2") is not None else safe_r2(regression_model, X_test, y_test)
+        linear_mae = reg_eval_result.get("mae") if isinstance(reg_eval_result, dict) else None
+        linear_rmse = reg_eval_result.get("rmse") if isinstance(reg_eval_result, dict) else None
+        linear_aggregated_mae = reg_eval_result.get("aggregated", {}).get("mae") if isinstance(reg_eval_result, dict) else None
+        linear_aggregated_rmse = reg_eval_result.get("aggregated", {}).get("rmse") if isinstance(reg_eval_result, dict) else None
 
         rf_evaluator = ModelEvaluator(rf_model, df_features)
         rf_eval_result = rf_evaluator.evaluate(X_test, y_test, aggregate_window="10min")
         rf_aggregated_r2 = rf_eval_result.get("aggregated", {}).get("r2") if isinstance(rf_eval_result, dict) else None
-        rf_r2 = rf_eval_result.get("r2") if isinstance(rf_eval_result, dict) and rf_eval_result.get(
-            "r2") is not None else safe_r2(rf_model, X_test, y_test)
+        rf_r2 = rf_eval_result.get("r2") if isinstance(rf_eval_result, dict) and rf_eval_result.get("r2") is not None else safe_r2(rf_model, X_test, y_test)
+        rf_mae = rf_eval_result.get("mae") if isinstance(rf_eval_result, dict) else None
+        rf_rmse = rf_eval_result.get("rmse") if isinstance(rf_eval_result, dict) else None
+        rf_aggregated_mae = rf_eval_result.get("aggregated", {}).get("mae") if isinstance(rf_eval_result, dict) else None
+        rf_aggregated_rmse = rf_eval_result.get("aggregated", {}).get("rmse") if isinstance(rf_eval_result, dict) else None
 
         ada_boost_evaluator = ModelEvaluator(ada_boost_model, df_features)
         ada_eval_result = ada_boost_evaluator.evaluate(X_test, y_test, aggregate_window="10min")
-        ada_aggregated_r2 = ada_eval_result.get("aggregated", {}).get("r2") if isinstance(ada_eval_result,
-                                                                                          dict) else None
-        ada_r2 = ada_eval_result.get("r2") if isinstance(ada_eval_result, dict) and ada_eval_result.get(
-            "r2") is not None else safe_r2(ada_boost_model, X_test, y_test)
+        ada_aggregated_r2 = ada_eval_result.get("aggregated", {}).get("r2") if isinstance(ada_eval_result,dict) else None
+        ada_r2 = ada_eval_result.get("r2") if isinstance(ada_eval_result, dict) and ada_eval_result.get("r2") is not None else safe_r2(ada_boost_model, X_test, y_test)
+        ada_mae = ada_eval_result.get("mae") if isinstance(ada_eval_result, dict) else None
+        ada_rmse = ada_eval_result.get("rmse") if isinstance(ada_eval_result, dict) else None
+        ada_aggregated_mae = ada_eval_result.get("aggregated", {}).get("mae") if isinstance(ada_eval_result, dict) else None
+        ada_aggregated_rmse = ada_eval_result.get("aggregated", {}).get("rmse") if isinstance(ada_eval_result, dict) else None
 
         mlp_evaluator = ModelEvaluator(mlp_model, df_features)
         mlp_eval_result = mlp_evaluator.evaluate(X_test, y_test, aggregate_window="10min")
-        mlp_aggregated_r2 = mlp_eval_result.get("aggregated", {}).get("r2") if isinstance(mlp_eval_result,
-                                                                                          dict) else None
-        mlp_r2 = mlp_eval_result.get("r2") if isinstance(mlp_eval_result, dict) and mlp_eval_result.get(
-            "r2") is not None else safe_r2(mlp_model, X_test, y_test)
+        mlp_aggregated_r2 = mlp_eval_result.get("aggregated", {}).get("r2") if isinstance(mlp_eval_result,dict) else None
+        mlp_r2 = mlp_eval_result.get("r2") if isinstance(mlp_eval_result, dict) and mlp_eval_result.get("r2") is not None else safe_r2(mlp_model, X_test, y_test)
+        mlp_mae = mlp_eval_result.get("mae") if isinstance(mlp_eval_result, dict) else None
+        mlp_rmse = mlp_eval_result.get("rmse") if isinstance(mlp_eval_result, dict) else None
+        mlp_aggregated_mae = mlp_eval_result.get("aggregated", {}).get("mae") if isinstance(mlp_eval_result, dict) else None
+        mlp_aggregated_rmse = mlp_eval_result.get("aggregated", {}).get("rmse") if isinstance(mlp_eval_result, dict) else None
 
         mean_speed_total = df_features["mean_speed"].mean() if "mean_speed" in df_features.columns else 0
         std_speed_total = df_features["std_speed"].std() if "std_speed" in df_features.columns else 0
@@ -123,6 +132,14 @@ for p in sorted(DATA_DIR.glob(CSV_GLOB)):
             "rf_r2": rf_r2,
             "ada_r2": ada_r2,
             "mlp_r2": mlp_r2,
+            "linear_mae": linear_mae,
+            "rf_mae": rf_mae,
+            "ada_mae": ada_mae,
+            "mlp_mae": mlp_mae,
+            "linear_rmse": linear_rmse,
+            "rf_rmse": rf_rmse,
+            "ada_rmse": ada_rmse,
+            "mlp_rmse": mlp_rmse,
             "linear_aggregated_r2": linear_aggregated_r2,
             "rf_aggregated_r2": rf_aggregated_r2,
             "ada_aggregated_r2": ada_aggregated_r2,
