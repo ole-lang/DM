@@ -53,7 +53,6 @@ class ModelEvaluator:
         #print(f"MAE = {mae_agg:.3f} ml")
         #print(f"RMSE = {rmse_agg:.3f} ml")
 
-        '''
         # Plots:
         plt.figure(figsize=(6,6))
         plt.scatter(y_test, y_pred, alpha=0.6)
@@ -62,7 +61,7 @@ class ModelEvaluator:
         plt.ylabel("Predicted")
         plt.title("Predicted vs Actual (interval level)")
         plt.show()
-        '''
+        
         plt.figure(figsize=(10,5))
         plt.plot(agg.index, agg["actual"], label="Actual", marker='o')
         plt.plot(agg.index, agg["predicted"], label="Predicted", marker='x')
