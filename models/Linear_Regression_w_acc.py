@@ -3,7 +3,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 import numpy as np
-from Data import fuel_intervals
+from Data_w_acc import fuel_intervals
 
 # technocally unnecessary class
 df = fuel_intervals.copy()

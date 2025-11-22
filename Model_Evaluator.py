@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-import matplotlib.pyplot as plt
+
 
 class ModelEvaluator:
     def __init__(self, model, df_features):
@@ -14,8 +14,8 @@ class ModelEvaluator:
         self.df_features = df_features.copy()
         
         # X_test needs to be scaled in MLP case
-    def evaluate(self, X_test, y_test, aggregate_window="30min"):
-        """Evaluate model both normally and on aggregated 30-min windows."""
+    def evaluate(self, X_test, y_test, aggregate_window="10min"):
+        """Evaluate model both normally and on aggregated 10-min windows."""
         if not isinstance(X_test, pd.DataFrame):
             X_test = pd.DataFrame(X_test, columns=self.df_features.drop(columns=["start_time", "end_time", "fuel_diff_ml"]).columns)
         
@@ -26,10 +26,12 @@ class ModelEvaluator:
         mae = mean_absolute_error(y_test, y_pred)
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 
+        '''
         print(f"\n Normal Evaluation:")
         print(f"R² = {r2:.3f}")
         print(f"MAE = {mae:.3f} ml")
         print(f"RMSE = {rmse:.3f} ml")
+        '''
 
         # aggregated metrics
         results = X_test.copy()
@@ -46,10 +48,10 @@ class ModelEvaluator:
         mae_agg = mean_absolute_error(agg["actual"], agg["predicted"])
         rmse_agg = np.sqrt(mean_squared_error(agg["actual"], agg["predicted"]))
 
-        print(f"\n Aggregated ({aggregate_window}) Evaluation:")
-        print(f"R² = {r2_agg:.3f}")
-        print(f"MAE = {mae_agg:.3f} ml")
-        print(f"RMSE = {rmse_agg:.3f} ml")
+        #print(f"\n Aggregated ({aggregate_window}) Evaluation:")
+        #print(f"R² = {r2_agg:.3f}")
+        #print(f"MAE = {mae_agg:.3f} ml")
+        #print(f"RMSE = {rmse_agg:.3f} ml")
 
         '''
         # Plots:
@@ -68,8 +70,10 @@ class ModelEvaluator:
         plt.legend()
         plt.show()
         '''
+
         return {
             "normal": {"r2": r2, "mae": mae, "rmse": rmse},
             # "aggregated": {"r2": r2_agg, "mae": mae_agg, "rmse": rmse_agg}
         }
+
         
