@@ -12,13 +12,12 @@ class AdaBoostModel():
             loss=loss,
             random_state=42
         )
-        
-        
+
+
     def train(self, X_train, y_train):
         '''Train the AdaBoost model'''
         self.model.fit(X_train, y_train)
-        
+
     def predict(self, X):
         '''Make predictions using the trained AdaBoost model'''
         return self.model.predict(X)
-    

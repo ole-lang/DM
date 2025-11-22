@@ -12,21 +12,17 @@ class MLPFuelModel():
     def build_model(self, input_dim):
         """Define and compile the Keras model."""
         model = keras.Sequential([
-            keras.Input(shape=(input_dim,)),
-            layers.Dense(64, activation='relu'),
+            layers.Dense(64, activation='relu', input_shape=(input_dim,)),
             layers.Dense(32, activation='relu'),
             layers.Dense(16, activation='relu'),
-            layers.Dense(1)
+            layers.Dense(1)  # Output layer
         ])
-
         model.compile(
             optimizer='adam',
             loss='mean_squared_error',
             metrics=['mae']
         )
-        # Speichere das Modell in der Instanz, damit weitere Methoden konsistent arbeiten
-        self.model = model
-        return self.model
+        return model
 
     def train(self, X_train, y_train, epochs=100, batch_size=16, validation_split=0.2, verbose=1):
         """Train the MLP on scaled data."""
@@ -35,17 +31,15 @@ class MLPFuelModel():
 
         # Build model if not already built
         if self.model is None:
-            self.build_model(X_train_scaled.shape[1])
+            self.model = self.build_model(X_train_scaled.shape[1])
 
         # Train model
-        callbacks = [keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)]
         history = self.model.fit(
             X_train_scaled, y_train,
             validation_split=validation_split,
             epochs=epochs,
             batch_size=batch_size,
-            verbose=verbose,
-            callbacks=callbacks
+            verbose=verbose
         )
 
         # return history
@@ -55,12 +49,6 @@ class MLPFuelModel():
         X_test_scaled = self.scaler.transform(X_test)
         y_pred = self.model.predict(X_test_scaled).flatten()
         return y_pred
-
-    # sklearn compatibility wrapper
-    def fit(self, X, y, **kwargs):
-        # Map sklearn-like fit to internal train (keeps defaults for epochs/batch_size)
-        self.train(X, y, **kwargs)
-        return self
 
 '''
 # Drop NaN rows
