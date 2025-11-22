@@ -13,7 +13,7 @@ from Data import DataLoader
 # put it then into a table of some sort and try to find ut which files perform better or worse
 # maybe try to find some patterns in the data that lead to better or worse performance
 
-fuel_data = pd.read_csv("fuel_data/863609060574567.csv")
+fuel_data = pd.read_csv("fuel_data/863609060584707.csv")
 df_features = DataLoader(fuel_data).create_pd_dataframe()
 
 # Features and target variable
