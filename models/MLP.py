@@ -12,10 +12,18 @@ class MLPFuelModel():
     def build_model(self, input_dim):
         """Define and compile the Keras model."""
         model = keras.Sequential([
+<<<<<<< HEAD
+            keras.Input(shape=(input_dim,)),
+            layers.Dense(64, activation='relu'),
+            layers.Dense(32, activation='relu'),
+            layers.Dense(16, activation='relu'),
+            layers.Dense(1)
+=======
             layers.Dense(64, activation='relu', input_shape=(input_dim,)),
             layers.Dense(32, activation='relu'),
             layers.Dense(16, activation='relu'),
             layers.Dense(1)  # Output layer
+>>>>>>> 2eb7e5b682a4028eae483acd4a99603b46789ddf
         ])
         model.compile(
             optimizer='adam',

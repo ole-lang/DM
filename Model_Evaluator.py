@@ -41,7 +41,7 @@ class ModelEvaluator:
 
         results["start_time"] = pd.to_datetime(results["start_time"])
         results = results.sort_values("start_time").set_index("start_time")
-
+        '''
         agg = results.resample(aggregate_window).sum(numeric_only=True)[["actual", "predicted"]]
 
         r2_agg = r2_score(agg["actual"], agg["predicted"])
@@ -62,7 +62,7 @@ class ModelEvaluator:
         plt.ylabel("Predicted")
         plt.title("Predicted vs Actual (interval level)")
         plt.show()
-
+        '''
         plt.figure(figsize=(10,5))
         plt.plot(agg.index, agg["actual"], label="Actual", marker='o')
         plt.plot(agg.index, agg["predicted"], label="Predicted", marker='x')
@@ -73,7 +73,7 @@ class ModelEvaluator:
 
         return {
             "normal": {"r2": r2, "mae": mae, "rmse": rmse},
-            "aggregated": {"r2": r2_agg, "mae": mae_agg, "rmse": rmse_agg}
+            # "aggregated": {"r2": r2_agg, "mae": mae_agg, "rmse": rmse_agg}
         }
 
         
