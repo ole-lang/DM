@@ -1,6 +1,7 @@
 # evaluation/model_evaluator.py
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
 
@@ -26,12 +27,22 @@ class ModelEvaluator:
         mae = mean_absolute_error(y_test, y_pred)
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 
-        '''
+        
         print(f"\n Normal Evaluation:")
         print(f"R² = {r2:.3f}")
         print(f"MAE = {mae:.3f} ml")
         print(f"RMSE = {rmse:.3f} ml")
-        '''
+        
+        
+        # Plot:
+        plt.figure(figsize=(6,6))
+        plt.scatter(y_test, y_pred, alpha=0.6)
+        plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--')
+        plt.xlabel("Actual")
+        plt.ylabel("Predicted")
+        plt.title("Predicted vs Actual (interval level)")
+        plt.show()
+        
 
         # aggregated metrics
         results = X_test.copy()
@@ -41,38 +52,40 @@ class ModelEvaluator:
 
         results["start_time"] = pd.to_datetime(results["start_time"])
         results = results.sort_values("start_time").set_index("start_time")
-        '''
+        
         agg = results.resample(aggregate_window).sum(numeric_only=True)[["actual", "predicted"]]
 
         r2_agg = r2_score(agg["actual"], agg["predicted"])
         mae_agg = mean_absolute_error(agg["actual"], agg["predicted"])
         rmse_agg = np.sqrt(mean_squared_error(agg["actual"], agg["predicted"]))
 
-        #print(f"\n Aggregated ({aggregate_window}) Evaluation:")
-        #print(f"R² = {r2_agg:.3f}")
-        #print(f"MAE = {mae_agg:.3f} ml")
-        #print(f"RMSE = {rmse_agg:.3f} ml")
+        print(f"\n Aggregated ({aggregate_window}) Evaluation:")
+        print(f"R² = {r2_agg:.3f}")
+        print(f"MAE = {mae_agg:.3f} ml")
+        print(f"RMSE = {rmse_agg:.3f} ml")
 
         # Plots:
+        
         plt.figure(figsize=(6,6))
-        plt.scatter(y_test, y_pred, alpha=0.6)
-        plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--')
+        plt.scatter(agg["actual"], agg["predicted"], alpha=0.6)
+        plt.plot([agg["actual"].min(), agg["actual"].max()], [agg["actual"].min(), agg["actual"].max()], 'k--')
         plt.xlabel("Actual")
         plt.ylabel("Predicted")
-        plt.title("Predicted vs Actual (interval level)")
+        plt.title("Predicted vs Actual (aggregated)")
         plt.show()
         
+        '''
         plt.figure(figsize=(10,5))
         plt.plot(agg.index, agg["actual"], label="Actual", marker='o')
         plt.plot(agg.index, agg["predicted"], label="Predicted", marker='x')
         plt.title(f"Aggregated Fuel Consumption ({aggregate_window})")
         plt.legend()
-        plt.show()
-        '''
+        plt.show()'''
+        
 
         return {
             "normal": {"r2": r2, "mae": mae, "rmse": rmse},
-            # "aggregated": {"r2": r2_agg, "mae": mae_agg, "rmse": rmse_agg}
+            "aggregated": {"r2": r2_agg, "mae": mae_agg, "rmse": rmse_agg}
         }
 
         

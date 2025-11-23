@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
-from Data import DataLoader
+from preprocessing_data.Data_w_acc import DataLoader
 from Model_Evaluator import ModelEvaluator
 from models.AdaBoost import AdaBoostModel
 from models.Linear_Regression import LinearRegressionModel
