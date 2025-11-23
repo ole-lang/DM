@@ -25,8 +25,8 @@ class MLPFuelModel():
         return model
 
     def train(self, X_train, y_train, epochs=100, batch_size=16, validation_split=0.2, verbose=1):
-        """Train the MLP on scaled data."""
-        # Scale the data
+        """Train the MLP on scaled data_handling."""
+        # Scale the data_handling
         X_train_scaled = self.scaler.fit_transform(X_train)
 
         # Build model if not already built
@@ -45,7 +45,7 @@ class MLPFuelModel():
         # return history
 
     def predict(self, X_test):
-        """Make predictions on new data."""
+        """Make predictions on new data_handling."""
         X_test_scaled = self.scaler.transform(X_test)
         y_pred = self.model.predict(X_test_scaled).flatten()
         return y_pred
@@ -53,7 +53,7 @@ class MLPFuelModel():
 '''
 # Drop NaN rows
 # environment variable: TF_ENABLE_ONEDNN_OPTS=0
-df_features = data.dropna()
+df_features = data_handling.dropna()
 
 # Define features and target
 X = df_features.drop(columns=["fuel_diff_ml", "start_time", "end_time"], errors='ignore')

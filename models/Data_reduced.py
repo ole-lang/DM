@@ -7,7 +7,7 @@ class DataLoader():
         self.data_folder = data_folder
 
     def create_pd_dataframe(self):
-        '''Process the loaded data to create a DataFrame with fuel intervals and speed statistics.'''
+        '''Process the loaded data_handling to create a DataFrame with fuel intervals and speed statistics.'''
         df = self.data_folder
         df["time"] = pd.to_datetime(df["time"])
         df = df.sort_values("time")
