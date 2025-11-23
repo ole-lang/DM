@@ -70,6 +70,7 @@ class ModelEvaluator:
         # print(f"MAE = {mae_agg:.3f} ml")
         # print(f"RMSE = {rmse_agg:.3f} ml")
 
+        """
         # Plots:
         plt.figure(figsize=(6,6))
         plt.scatter(y_test, y_pred, alpha=0.6)
@@ -85,7 +86,7 @@ class ModelEvaluator:
         plt.title(f"Aggregated Fuel Consumption ({aggregate_window})")
         plt.legend()
         plt.show()
-        '''
+        """
 
         return {
             "normal": {"r2": r2, "mae": mae, "rmse": rmse},

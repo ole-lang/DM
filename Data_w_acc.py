@@ -47,7 +47,7 @@ class DataLoader():
                 speed_values = speeds.reset_index(drop=True)
                 acc_metrics = _acc_brake_totals(speed_times, speed_values)
             else:
-                # Keine ausreichenden Speed-Punkte -> sichere Defaults für alle erwarteten Keys
+                # not enough speed points -> safe defaults for all expected keys
                 acc_metrics = {}
 
             results.append({
@@ -82,7 +82,7 @@ class DataLoader():
         # rows_all_nan = fuel_intervals.isna().all(axis=1).sum()
         # print("Column with only NaNs:", rows_all_nan)
 
-        # Drop rows with NaN in allen relevanten Metriken
+        # Drop rows with NaN in relevant metrics
         metric_cols = [
             "fuel_diff_ml", "n_speed_points", "mean_speed", "std_speed",
             "total_acc_m_s", "total_brake_m_s",
@@ -115,11 +115,11 @@ class DataLoader():
             # print(f"Quantile: low={q_low}, high={q_high}")
             # print(f"Outliers removed: {removed} / {before} -> Rows left: {after}")
 
-            # Optional: als CSV speichern
+            # Save filtered in CSV
             # fuel_intervals.to_csv('fuel_intervals_filtered.csv', index=False, encoding='utf-8')
 
             # Save in CSV
             # fuel_intervals.to_csv('fuel_intervals.csv', index=False, encoding='utf-8')
-            # print("Geschrieben:", os.path.abspath('fuel_intervals.csv'))
+
 
         return fuel_intervals

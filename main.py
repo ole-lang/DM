@@ -38,11 +38,11 @@ for p in sorted(DATA_DIR.glob(CSV_GLOB)):
             if col in df_features.columns:
                 df_features[col] = pd.to_datetime(df_features[col], errors="coerce")
 
-        # Drop rows mit ungültigen Zeitstempeln
+        # Drop rows with invalid timestamps
         if {"start_time", "end_time"}.issubset(df_features.columns):
             df_features = df_features.dropna(subset=["start_time", "end_time"])
         if df_features.empty or "fuel_diff_ml" not in df_features.columns:
-            print(f"Keine verwertbaren Daten in `{p}`, überspringe.")
+            print(f"No usable data in `{p}`, skip.")
             continue
 
         df_features["duration_s"] = (df_features["end_time"] - df_features["start_time"]).dt.total_seconds()
@@ -51,7 +51,7 @@ for p in sorted(DATA_DIR.glob(CSV_GLOB)):
         y = df_features["fuel_diff_ml"]
 
         if X.empty or y.empty:
-            print(f"Keine Features/Labels in `{p}`, überspringe.")
+            print(f"No features/labels in `{p}`, skip.")
             continue
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -76,17 +76,7 @@ for p in sorted(DATA_DIR.glob(CSV_GLOB)):
         mlp_model.train(X_train, y_train, epochs=100, batch_size=16, validation_split=0.2, verbose=0)
 
 
-        # Hilfsfunktion für sichere R2-Berechnung
-        def safe_r2(model, X_val, y_val):
-            try:
-                y_pred = model.predict(X_val)
-                return float(r2_score(y_val, y_pred))
-            except Exception as e:
-                print(f"Fehler bei Vorhersage mit {model.__class__.__name__} für `{p}`: {e}")
-                return None
-
-
-        # Evaluationen durchführen und aggregierte Werte holen
+        # Evaluate models and get aggregated values
         regression_evaluator = ModelEvaluator(regression_model, df_features)
         reg_eval_result = regression_evaluator.evaluate(X_test, y_test, aggregate_window="10min")
         linear_aggregated_r2 = reg_eval_result.get("aggregated", {}).get("r2") if isinstance(reg_eval_result,dict) else None
@@ -166,7 +156,7 @@ for p in sorted(DATA_DIR.glob(CSV_GLOB)):
         traceback.print_exc()
         continue
 
-# Schreibe aggregierte Ergebnisse weg
+# Safe results
 if results:
     pd.DataFrame(results).to_csv(OUT_CSV, index=False)
     print(f"Ergebnisse geschrieben nach `{OUT_CSV}`")
