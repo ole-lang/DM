@@ -7,7 +7,7 @@ class DataLoader():
         self.data_folder = data_folder
 
     def create_pd_dataframe(self):
-        '''Process the loaded data to create a DataFrame with fuel intervals and speed statistics.'''
+        #Process the loaded data_handling to create a DataFrame with fuel intervals and speed statistics
         df = self.data_folder
         df["time"] = pd.to_datetime(df["time"])
         df = df.sort_values("time")
@@ -28,15 +28,9 @@ class DataLoader():
         speed_all = pd.concat([gps_speed_df, mdi_speed_df], ignore_index=True).sort_values("time").reset_index(
             drop=True)
 
-        max_speed = pd.to_numeric(speed_all["speed"], errors="coerce").max()
-        # print("Max Speed:", max_speed)
-
         # Calculate fuel differences
         fuel_df = df.dropna(subset=["TRACKS.MUNIC.MDI_OBD_FUEL (ml)"]).sort_values("time").copy()
         fuel_df["fuel_diff_ml"] = fuel_df["TRACKS.MUNIC.MDI_OBD_FUEL (ml)"].diff()
-
-        max_fuel_df = pd.to_numeric(fuel_df["fuel_diff_ml"], errors="coerce").max()
-        # print("Max Fuel Diff:", max_fuel_df)
 
         fuel_df = fuel_df.sort_values("time").reset_index(drop=True)
         speed_all = speed_all.sort_values("time").reset_index(drop=True)
@@ -68,14 +62,16 @@ class DataLoader():
 
         fuel_intervals = pd.DataFrame(results)
 
+        """
         # Amount of NaN values analysis
-        # rows_with_nan = fuel_intervals.isna().any(axis=1).sum()
-        # print("Rows with ≥1 NaN:", rows_with_nan)
-        # print("NaN per column:\n", fuel_intervals.isna().sum())
-        # total_nans = fuel_intervals.isna().sum().sum()
-        # print("Total NaNs:", total_nans)
-        # rows_all_nan = fuel_intervals.isna().all(axis=1).sum()
-        # print("Column with only NaNs:", rows_all_nan)
+        rows_with_nan = fuel_intervals.isna().any(axis=1).sum()
+        print("Rows with ≥1 NaN:", rows_with_nan)
+        print("NaN per column:\n", fuel_intervals.isna().sum())
+        total_nans = fuel_intervals.isna().sum().sum()
+        print("Total NaNs:", total_nans)
+        rows_all_nan = fuel_intervals.isna().all(axis=1).sum()
+        print("Column with only NaNs:", rows_all_nan)
+        """
 
         # Drop rows with NaN in mean_speed
         fuel_intervals = fuel_intervals.dropna(subset=["mean_speed"]).reset_index(drop=True)
@@ -100,11 +96,10 @@ class DataLoader():
             # print(f"Quantile: low={q_low}, high={q_high}")
             # print(f"Outliers removed: {removed} / {before} -> Rows left: {after}")
 
-            # Optional: als CSV speichern
+            # Save as filtered CSV
             # fuel_intervals.to_csv('fuel_intervals_filtered.csv', index=False, encoding='utf-8')
 
             # Save in CSV
             # fuel_intervals.to_csv('fuel_intervals.csv', index=False, encoding='utf-8')
-            # print("Geschrieben:", os.path.abspath('fuel_intervals.csv'))
 
         return fuel_intervals
