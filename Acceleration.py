@@ -40,7 +40,7 @@ def _acc_brake_totals(speed_times, speeds_kmh):
 
     a = dv / dt  # m/s**2
 
-    # ensure we only use finite values for masks (NaN/Inf vermeiden)
+    # ensure to only use finite values for masks (NaN/Inf vermeiden)
     finite_mask = np.isfinite(a) & np.isfinite(dv) & np.isfinite(dt)
     pos_mask = (a > 0) & finite_mask
     neg_mask = (a < 0) & finite_mask
@@ -58,9 +58,9 @@ def _acc_brake_totals(speed_times, speeds_kmh):
     mean_neg_acc = float(-a[neg_mask].mean()) if np.any(neg_mask) else 0.0
 
     # Count acceleration/braking events based on threshold crossings
-    # thresh = 0.1  # m/s^2
-    pos_events = (a > 0)
-    neg_events = (a < 0)
+    # thresh = 0.01  # m/s^2
+    pos_events = (a > 0.01)
+    neg_events = (a < 0.01)
 
     def count_events(mask):
         if not mask.any():

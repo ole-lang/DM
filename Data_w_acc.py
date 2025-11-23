@@ -119,7 +119,7 @@ class DataLoader():
             # fuel_intervals.to_csv('fuel_intervals_filtered.csv', index=False, encoding='utf-8')
 
             # Save in CSV
-            fuel_intervals.to_csv('fuel_intervals.csv', index=False, encoding='utf-8')
-            print("Geschrieben:", os.path.abspath('fuel_intervals.csv'))
+            # fuel_intervals.to_csv('fuel_intervals.csv', index=False, encoding='utf-8')
+            # print("Geschrieben:", os.path.abspath('fuel_intervals.csv'))
 
         return fuel_intervals

@@ -41,17 +41,34 @@ class ModelEvaluator:
 
         results["start_time"] = pd.to_datetime(results["start_time"])
         results = results.sort_values("start_time").set_index("start_time")
-        '''
-        agg = results.resample(aggregate_window).sum(numeric_only=True)[["actual", "predicted"]]
 
-        r2_agg = r2_score(agg["actual"], agg["predicted"])
-        mae_agg = mean_absolute_error(agg["actual"], agg["predicted"])
-        rmse_agg = np.sqrt(mean_squared_error(agg["actual"], agg["predicted"]))
+        # resample to aggregate per window
+        # compute counts per window to detect empty windows
+        counts = results.resample(aggregate_window).size()
+        agg_all = results.resample(aggregate_window).sum(numeric_only=True)[["actual", "predicted"]]
 
-        #print(f"\n Aggregated ({aggregate_window}) Evaluation:")
-        #print(f"R² = {r2_agg:.3f}")
-        #print(f"MAE = {mae_agg:.3f} ml")
-        #print(f"RMSE = {rmse_agg:.3f} ml")
+        # only keep windows that have at least one sample
+        nonempty_mask = counts > 0
+        agg_nonempty = agg_all.loc[nonempty_mask.values]
+
+        # safe computation: if no non-empty windows exist, return NaN/None for aggregated metrics
+        if len(agg_nonempty) >= 2:
+            r2_agg = r2_score(agg_nonempty["actual"], agg_nonempty["predicted"])
+        else:
+            r2_agg = np.nan
+
+        if len(agg_nonempty) >= 1:
+            mae_agg = mean_absolute_error(agg_nonempty["actual"], agg_nonempty["predicted"])
+            rmse_agg = np.sqrt(mean_squared_error(agg_nonempty["actual"], agg_nonempty["predicted"]))
+        else:
+            mae_agg = np.nan
+            rmse_agg = np.nan
+
+
+        # print(f"\n Aggregated ({aggregate_window}) Evaluation:")
+        # print(f"R² = {r2_agg:.3f}")
+        # print(f"MAE = {mae_agg:.3f} ml")
+        # print(f"RMSE = {rmse_agg:.3f} ml")
 
         '''
         # Plots:
@@ -62,7 +79,7 @@ class ModelEvaluator:
         plt.ylabel("Predicted")
         plt.title("Predicted vs Actual (interval level)")
         plt.show()
-        '''
+        
         plt.figure(figsize=(10,5))
         plt.plot(agg.index, agg["actual"], label="Actual", marker='o')
         plt.plot(agg.index, agg["predicted"], label="Predicted", marker='x')
@@ -73,7 +90,5 @@ class ModelEvaluator:
 
         return {
             "normal": {"r2": r2, "mae": mae, "rmse": rmse},
-            # "aggregated": {"r2": r2_agg, "mae": mae_agg, "rmse": rmse_agg}
+            "aggregated": {"r2": r2_agg, "mae": mae_agg, "rmse": rmse_agg}
         }
-
-        
