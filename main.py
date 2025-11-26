@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from data_handling.data_w_acc import DataLoader
+from data_handling.data import DataLoader
 from model_evaluator import ModelEvaluator
 from models.AdaBoost import AdaBoostModel
 from models.Linear_Regression import LinearRegressionModel
@@ -14,7 +14,7 @@ from models.Random_Forest import RandomForestModel
 
 DATA_DIR = Path("fuel_data")
 CSV_GLOB = "*.csv"
-OUT_CSV = Path("Results_w_acc.csv")
+OUT_CSV = Path("data_zscore.csv")
 
 i = 1
 results = []

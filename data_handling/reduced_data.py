@@ -1,0 +1,124 @@
+import numpy as np
+import pandas as pd
+
+
+class DataLoader():
+    def __init__(self, data_folder, drop_speed_frac: float = 0.5, random_state: int = 42):
+        """
+        data_folder: dataframe or path (existing behavior)
+        drop_speed_frac: fraction of combined speed rows to randomly drop (e.g. 0.25 = drop 25%)
+        random_state: seed for reproducible sampling
+        """
+        self.data_folder = data_folder
+        # fraction of speed rows to remove from `speed_all` after merging gps/mdi speeds
+        self.drop_speed_frac = float(drop_speed_frac) if drop_speed_frac is not None else 0.0
+        self.random_state = random_state
+
+    def create_pd_dataframe(self):
+        #Process the loaded data_handling to create a DataFrame with fuel intervals and speed statistics
+        df = self.data_folder
+        df["time"] = pd.to_datetime(df["time"])
+        df = df.sort_values("time")
+
+        # Extract GPS speeds
+        gps_speed_df = df.dropna(subset=["TRACKS.MUNIC.GPS_SPEED (km/h)"])[
+            ["time", "TRACKS.MUNIC.GPS_SPEED (km/h)"]].copy()
+        gps_speed_df = gps_speed_df.rename(columns={"TRACKS.MUNIC.GPS_SPEED (km/h)": "speed"})
+        gps_speed_df["source"] = "gps"
+
+        # Extract MDI speeds
+        mdi_speed_df = df.dropna(subset=["TRACKS.MUNIC.MDI_OBD_SPEED (km/h)"])[
+            ["time", "TRACKS.MUNIC.MDI_OBD_SPEED (km/h)"]].copy()
+        mdi_speed_df = mdi_speed_df.rename(columns={"TRACKS.MUNIC.MDI_OBD_SPEED (km/h)": "speed"})
+        mdi_speed_df["source"] = "mdi"
+
+        # Combine GPS and MDI speeds
+        speed_all = pd.concat([gps_speed_df, mdi_speed_df], ignore_index=True).sort_values("time").reset_index(
+            drop=True)
+
+        # --- Test: randomly drop a fraction of speed rows to simulate missing speed data ---
+        # If drop_speed_frac > 0, randomly keep (1 - drop_speed_frac) fraction of rows.
+        if self.drop_speed_frac and self.drop_speed_frac > 0.0:
+            keep_frac = max(0.0, 1.0 - float(self.drop_speed_frac))
+            # if keep_frac == 0.0, this will produce an empty speed_all (handled downstream)
+            try:
+                speed_all = speed_all.sample(frac=keep_frac, random_state=self.random_state).sort_values("time").reset_index(drop=True)
+            except ValueError:
+                # sampling may fail for tiny data; fall back to keeping original
+                pass
+
+        # Calculate fuel differences
+        fuel_df = df.dropna(subset=["TRACKS.MUNIC.MDI_OBD_FUEL (ml)"]).sort_values("time").copy()
+        fuel_df["fuel_diff_ml"] = fuel_df["TRACKS.MUNIC.MDI_OBD_FUEL (ml)"].diff()
+
+        fuel_df = fuel_df.sort_values("time").reset_index(drop=True)
+        speed_all = speed_all.sort_values("time").reset_index(drop=True)
+
+        results = []
+        for i in range(1, len(fuel_df)):
+            start = fuel_df.loc[i - 1, "time"]
+            end = fuel_df.loc[i, "time"]
+            fuel_diff = fuel_df.loc[i, "fuel_diff_ml"]
+            duration = (end - start).total_seconds()
+            if duration <= 0 or duration > 600:
+                continue  # Skip invalid or too long intervals:
+
+            mask = (speed_all["time"] > start) & (speed_all["time"] <= end)
+            speeds = speed_all.loc[mask, "speed"].dropna()
+
+            n_points = int(speeds.size)
+            mean_speed = speeds.mean() if n_points > 0 else np.nan
+            std_speed = speeds.std(ddof=1) if n_points > 1 else (0.0 if n_points == 1 else np.nan)
+
+            results.append({
+                "start_time": start,
+                "end_time": end,
+                "fuel_diff_ml": fuel_diff,
+                "n_speed_points": n_points,
+                "mean_speed": mean_speed,
+                "std_speed": std_speed,
+            })
+
+        fuel_intervals = pd.DataFrame(results)
+
+        """
+        # Amount of NaN values analysis
+        rows_with_nan = fuel_intervals.isna().any(axis=1).sum()
+        print("Rows with ≥1 NaN:", rows_with_nan)
+        print("NaN per column:\n", fuel_intervals.isna().sum())
+        total_nans = fuel_intervals.isna().sum().sum()
+        print("Total NaNs:", total_nans)
+        rows_all_nan = fuel_intervals.isna().all(axis=1).sum()
+        print("Column with only NaNs:", rows_all_nan)
+        """
+
+        # Drop rows with NaN in mean_speed
+        fuel_intervals = fuel_intervals.dropna(subset=["mean_speed"]).reset_index(drop=True)
+
+        # 95 quantile analysis for fuel_diff_ml
+        s = fuel_intervals["fuel_diff_ml"]
+        valid = s.dropna()
+
+        if len(valid) < 10:
+            print("To few values in fuel_diff:", len(valid))
+        else:
+            q_low = valid.quantile(0.025)
+            q_high = valid.quantile(0.975)
+
+            is_outlier = s.notna() & ((s < q_low) | (s > q_high))
+            removed = int(is_outlier.sum())
+            before = len(fuel_intervals)
+
+            fuel_intervals = fuel_intervals.loc[~is_outlier].reset_index(drop=True)
+
+            after = len(fuel_intervals)
+            # print(f"Quantile: low={q_low}, high={q_high}")
+            # print(f"Outliers removed: {removed} / {before} -> Rows left: {after}")
+
+            # Save as filtered CSV
+            # fuel_intervals.to_csv('fuel_intervals_filtered.csv', index=False, encoding='utf-8')
+
+            # Save in CSV
+            # fuel_intervals.to_csv('fuel_intervals.csv', index=False, encoding='utf-8')
+
+        return fuel_intervals

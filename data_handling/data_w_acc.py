@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
-from acceleration import _acc_brake_totals
+from data_handling.acceleration import _acc_brake_totals
 
 
 class DataLoader():

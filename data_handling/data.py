@@ -73,33 +73,57 @@ class DataLoader():
         print("Column with only NaNs:", rows_all_nan)
         """
 
+
+
         # Drop rows with NaN in mean_speed
         fuel_intervals = fuel_intervals.dropna(subset=["mean_speed"]).reset_index(drop=True)
 
-        # 95 quantile analysis for fuel_diff_ml
+
         s = fuel_intervals["fuel_diff_ml"]
         valid = s.dropna()
 
+        """
+        # 95 quantile analysis for fuel_diff_ml
         if len(valid) < 10:
             print("To few values in fuel_diff:", len(valid))
         else:
             q_low = valid.quantile(0.025)
             q_high = valid.quantile(0.975)
-
             is_outlier = s.notna() & ((s < q_low) | (s > q_high))
-            removed = int(is_outlier.sum())
-            before = len(fuel_intervals)
-
             fuel_intervals = fuel_intervals.loc[~is_outlier].reset_index(drop=True)
 
-            after = len(fuel_intervals)
+            # removed = int(is_outlier.sum())
+            # before = len(fuel_intervals)
+            # after = len(fuel_intervals)
             # print(f"Quantile: low={q_low}, high={q_high}")
             # print(f"Outliers removed: {removed} / {before} -> Rows left: {after}")
+        """
 
-            # Save as filtered CSV
-            # fuel_intervals.to_csv('fuel_intervals_filtered.csv', index=False, encoding='utf-8')
 
-            # Save in CSV
-            # fuel_intervals.to_csv('fuel_intervals.csv', index=False, encoding='utf-8')
+        # IQR
+        q1 = s.quantile(0.25)
+        q3 = s.quantile(0.75)
+        iqr = q3 - q1
+        lower = q1 - 1.5 * iqr
+        upper = q3 + 1.5 * iqr
+        mask_keep = s.between(lower, upper) | s.isna()
+
+        fuel_intervals = fuel_intervals[mask_keep]
+
+        """
+        # Modified Z-Score
+        m = s.median()
+        mad = np.median(np.abs(s.dropna() - m))
+        if mad == 0:
+            return pd.Series(True, index=s.index)
+        mod_z = 0.6745 * (s - m) / mad
+        mask_keep = mod_z.abs() <= 3.5
+        mask_keep = mask_keep | s.isna()
+
+        fuel_intervals = fuel_intervals[mask_keep]
+        """
+
+        # Save in CSV
+        # fuel_intervals.to_csv('fuel_intervals.csv', index=False, encoding='utf-8')
 
         return fuel_intervals
