@@ -12,10 +12,18 @@ class MLPFuelModel():
     def build_model(self, input_dim):
         """Define and compile the Keras model."""
         model = keras.Sequential([
+<<<<<<< HEAD
+            keras.Input(shape=(input_dim,)),
+            layers.Dense(64, activation='relu'),
+            layers.Dense(32, activation='relu'),
+            layers.Dense(16, activation='relu'),
+            layers.Dense(1)
+=======
             layers.Dense(64, activation='relu', input_shape=(input_dim,)),
             layers.Dense(32, activation='relu'),
             layers.Dense(16, activation='relu'),
             layers.Dense(1)  # Output layer
+>>>>>>> 4747b0bb4d3e6dc0f016b41aa306286aebc6a36a
         ])
         model.compile(
             optimizer='adam',
@@ -25,8 +33,8 @@ class MLPFuelModel():
         return model
 
     def train(self, X_train, y_train, epochs=100, batch_size=16, validation_split=0.2, verbose=1):
-        """Train the MLP on scaled data_handling."""
-        # Scale the data_handling
+        """Train the MLP on scaled data."""
+        # Scale the data
         X_train_scaled = self.scaler.fit_transform(X_train)
 
         # Build model if not already built
@@ -45,10 +53,12 @@ class MLPFuelModel():
         # return history
 
     def predict(self, X_test):
-        """Make predictions on new data_handling."""
+        """Make predictions on new data."""
         X_test_scaled = self.scaler.transform(X_test)
         y_pred = self.model.predict(X_test_scaled).flatten()
         return y_pred
+<<<<<<< HEAD
+=======
 
 '''
 # Drop NaN rows
@@ -106,3 +116,4 @@ plt.xlabel("Actual fuel used")
 plt.ylabel("Predicted fuel used")
 plt.title("MLP predictions vs actual")
 plt.show()'''
+>>>>>>> 4747b0bb4d3e6dc0f016b41aa306286aebc6a36a
